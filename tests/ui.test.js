@@ -143,15 +143,15 @@ test("Register with empty  field", async ({ page }) => {
 
 // ---------------- START -------------------//
 
-test("Register with empty  email", async ({ page }) => {
+test("Register with empty  passowrd", async ({ page }) => {
   await page.goto("http://localhost:3000/register");
-  await page.fill('input[name="password"]', "123456");
+  await page.fill('input[name="email"]', "kalin@abv.bg");
   await page.fill('input[name="confirm-pass"]', "123456");
   await page.click('input[type="submit"]');
 
   page.on("dialog", async (dialog) => {
     expect(dialog.type()).toContain("alert");
-    expect(dialog.message()).toContain("Email Fields is required");
+    expect(dialog.message()).toContain("Password Field is required");
     await dialog.expect();
   });
 
@@ -160,6 +160,73 @@ test("Register with empty  email", async ({ page }) => {
 });
 
 // ---------------- END -------------------//
+
+
+// ---------------- START -------------------//
+
+test("Register with empty  email", async ({ page }) => {
+  await page.goto("http://localhost:3000/register");
+  await page.fill('input[name="email"]', "kalin@abv.bg");
+  await page.fill('input[name="confirm-pass"]', "123456");
+  await page.click('input[type="submit"]');
+
+  page.on("dialog", async (dialog) => {
+    expect(dialog.type()).toContain("alert");
+    expect(dialog.message()).toContain("Password Field is required");
+    await dialog.expect();
+  });
+
+  await page.$('a[href="/register"]');
+  expect(page.url()).toBe("http://localhost:3000/register");
+});
+
+// ---------------- END -------------------//
+
+test("Register with diffrent passwords", async ({ page }) => {
+  await page.goto("http://localhost:3000/register");
+  await page.fill('input[name="email"]', "pesho@abv.bg");
+  await page.fill('input[name="password"]', "123456");
+  await page.fill('input[name="confirm-pass"]', "1234567");
+  await page.click('input[type="submit"]');
+
+  page.on("dialog", async (dialog) => {
+    expect(dialog.type()).toContain("alert");
+    expect(dialog.message()).toContain("Passwords doesn't match");
+    await dialog.expect();
+  });
+
+  await page.$('a[href="/register"]');
+  expect(page.url()).toBe("http://localhost:3000/register");
+});
+
+// ---------------- END -------------------//
+
+//---------------- Start ------------------//
+
+test("Add a book with correct data", async ({ page }) => {
+  await page.goto("http://localhost:3000/login");
+  await page.fill('input[name="email"]', "pesho@abv.bg");
+  await page.fill('input[name="password"]', "123456");
+
+  await Promise.all([
+    page.click('input[type="submi"]'),
+    page.waitForURL('http://localhost:3000/catalog')
+  ])
+
+  await page.click('a[href="/create"]');
+  
+  await page.fill('#title', 'Test Book');
+  await page.fill('#description', 'This is a test book description');
+  await page.fill('#iamge', 'http://example.com/book-image.jpg');
+  await page.selectOption('#type', 'Fiction');
+
+  await page.click('#create-form input[type="submit"]');
+
+  await page.waitForURL('http://localhost:3000/catalog')
+  expect(page.url()).toBe("http://localhost:3000/catalog");
+});
+
+
 
 
 // test('user can delete a task', async ({ page }) => {
