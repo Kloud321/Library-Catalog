@@ -110,7 +110,7 @@ test("Login with empty password field", async ({ page }) => {
 
 test("Register with valid credentials", async ({ page }) => {
   await page.goto("http://localhost:3000/register");
-  await page.fill('input[name="email"]', "kalin@abv.bg");
+  await page.fill('input[name="email"]', "petar@abv.bg");
   await page.fill('input[name="password"]', "123456");
   await page.fill('input[name="confirm-pass"]', "123456");
   await page.click('input[type="submit"]');
@@ -209,7 +209,7 @@ test("Add a book with correct data", async ({ page }) => {
   await page.fill('input[name="password"]', "123456");
 
   await Promise.all([
-    page.click('input[type="submi"]'),
+    page.click('input[type="submit"]'),
     page.waitForURL('http://localhost:3000/catalog')
   ])
 
